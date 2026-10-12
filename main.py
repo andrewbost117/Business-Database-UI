@@ -22,17 +22,14 @@ def main():
     cur.executescript(sql_script)
 
 
-    name = input("Enter employee name (3-15 Characters): ")
+    name = input("Enter employee name: ")
+    id = input("Enter employe ID: ")
 
+  
 
-    create_employee(name)
-
-    # Verifies that the new table is made by querying  
-    #res = cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    #results = res.fetchall()
-    #print(results)
-
-
+    #create_employee(name)
+    #employees = read_employee(id)
+    update_employee(name, id)
 
     #sql_query = ("UPDATE Employees SET Name = ? WHERE EmployeeID = ?")
     #data = ('Bob', 1)
@@ -81,5 +78,54 @@ def create_employee(employee_name):
     finally:
         if dbConnection is not None:
             dbConnection.close()
+
+def read_employee(employee_id):
+
+
+    dbConnection = None
+
+    # DB connection
+    try: 
+        with sqlite3.connect("business.db") as dbConnection:
+            cur = dbConnection.cursor()
+
+            # Gets all of the results in the Employees Table and saves them into 'results'
+            res = cur.execute("SELECT * FROM employees WHERE EmployeeID = ?", (employee_id,))
+            results = res.fetchone()
+            
+            print(results)
+            
+            return results
+        
+    except sqlite3.Error as error:
+        print(f"Database error: {error}")
+
+    finally:
+        if dbConnection is not None:
+            dbConnection.close()
+
+def update_employee(employee_name, employee_id):
+
+
+    dbConnection = None
+        
+    try: 
+        with sqlite3.connect("business.db") as dbConnection:
+            cur = dbConnection.cursor()
+
+            # Inserts the input into the database
+            cur.execute("UPDATE Employees SET = ? WHERE EmployeeID = ?")
+            
+
+        
+    except sqlite3.Error as error:
+        print(f"Database error: {error}")
+
+    finally:
+        if dbConnection is not None:
+            dbConnection.close()
+
+
+
 
 main()
