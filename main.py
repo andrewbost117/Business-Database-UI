@@ -22,31 +22,25 @@ def main():
     cur.executescript(sql_script)
 
 
-    # name = input("Enter employee name: ")
-    id = input("Enter employee ID: ")
+    #name = input("Enter employee name: ")
+    id = input("Enter employee ID you'd wish to delete: ")
 
-    newname = input("Enter a new name: ")
+    #newname = input("Enter a new name: ")
 
     #create_employee(name)
     #employees = read_employee(id)
-    update_employee(id, newname)
-
-    #sql_query = ("UPDATE Employees SET Name = ? WHERE EmployeeID = ?")
-    #data = ('Bob', 1)
-    #cur.execute(sql_query, data)
-    #dbConnection.commit()
+    #update_employee(id, newname)
+    delete_employee(id)
 
     #sql_query = "DELETE FROM Employees WHERE EmployeeID = ?"
     #target_id = 8
     #cur.execute(sql_query, (target_id,))
     #dbConnection.commit()
 
-    #res = cur.execute("SELECT EmployeeID, Name FROM Employees")
-    #results = res.fetchall()
-    #print(results)
 
     dbConnection.close()
 
+# The purpose of this function is to create an employee
 def create_employee(employee_name):
 
     # Input validation: If not a string return   
@@ -81,6 +75,7 @@ def create_employee(employee_name):
         if dbConnection is not None:
             dbConnection.close()
 
+# The purpose of this function is to read a specific employee
 def read_employee(employee_id):
 
     dbConnection = None
@@ -105,6 +100,7 @@ def read_employee(employee_id):
         if dbConnection is not None:
             dbConnection.close()
 
+# The purpose of this function is to update an existing employee
 def update_employee(employee_id, new_name):
 
     dbConnection = None
@@ -147,7 +143,42 @@ def update_employee(employee_id, new_name):
         if dbConnection is not None:
             dbConnection.close()
 
+# The purpose of this funciton is to delete an existing employee 
+def delete_employee(employee_id):
 
+    dbConnection = None
+
+   # Input validation: Makes sure the Employee ID is legit if not returns
+    if type(employee_id) is not int or employee_id <= 0:
+        print("Invalid employee ID.")
+        return
+
+    if cur.rowcount == 0:
+        print("Employee not found.")
+    else:
+        print("Employee deleted successfully.")
+
+    try: 
+        with sqlite3.connect("business.db") as dbConnection:
+            cur = dbConnection.cursor()
+
+            # Parameterized SQL query for safety reasons
+            query = "DELETE FROM Employees WHERE EmployeeID = ?"
+
+            # Parameters
+            par = (employee_id,)
+
+            cur.execute(query, par)
+
+
+            dbConnection.commit()
+
+    except sqlite3.Error as error:
+        print(f"Database error: {error}")
+
+    finally:
+        if dbConnection is not None:
+            dbConnection.close()
 
 
 main()
