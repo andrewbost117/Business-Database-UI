@@ -9,12 +9,13 @@ Date Created: 29 September 2026
 
 
 
-Date last modified: 9/29/2026
+Date last modified: *11/2/2026*
 
 
-DISCLAIMER AI Usage: 
-AI-assisted tools were used during the planning and database-design stages of this project, 
-including assistance with developing the initial database schema. All Python application logic,
+**DISCLAIMER of AI Usage:**
+AI-assisted tools were used during the planning and database-design stages of this project 
+including assistance with developing the initial database schema. All Python application logic
 database implementation, integration, testing, and debugging were completed and reviewed by me.
+
 
 schema.sql was prompted by ChatGPT and Lucid AI created the schema file

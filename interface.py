@@ -2,7 +2,7 @@ import customtkinter as ctk
 import main
 
 
-# This function updates the Status label
+# This function creates new employees
 def handle_create_employee():
     employee_name = employee_entry.get()
 
@@ -43,6 +43,7 @@ def handle_update_employee():
 
     main.update_employee(employee_id, employee_new_name)
 
+# This function deletes an existing employees
 def handle_delete_employee():
     # Validates that the user input is a number
     try:
@@ -58,7 +59,6 @@ def handle_delete_employee():
     else:
         status_label.configure(text="Employee not found or deletion failed.")   
 
-
 # This function changes the theme of the UI
 def change_theme():
     status = check_var.get()
@@ -68,7 +68,11 @@ def change_theme():
     elif status == "Dark":
         ctk.set_appearance_mode("Dark")
 
+def show_page(page):
+    employees_frame.pack_forget()
+    customers_frame.pack_forget()
 
+    page.pack(fill="both", expand=True)
 # Creates the main application's window
 app = ctk.CTk()
 
@@ -80,52 +84,97 @@ app.geometry("700x750")
 app.minsize(600, 650)
 
 
-# Title 
-title_label = ctk.CTkLabel(app, text="Employee Management")
-title_label.pack(pady=20)
+# FRAMES 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Side Bar and its children widgets for changing pages
+sidebar_frame = ctk.CTkFrame(app, width=180, corner_radius=0)
+sidebar_frame.pack(side="left",fill="y")
+sidebar_frame.pack_propagate(False) # Prevents child widgets from changing the frame's reuqested dimensions
+
+# Content frame 
+content_frame = ctk.CTkFrame(app, fg_color="transparent")
+content_frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+
+# Frame for employees
+employees_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
+employees_frame.pack(fill="both", expand=True)
+
+# Frame for customers
+customers_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
+customers_frame.pack(fill="both", expand=True)
+
+
+
+# SIDE BAR WIDGETS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Employees Page Button
+employees_button = ctk.CTkButton(sidebar_frame, text="Employees",command=lambda: show_page(employees_frame))
+employees_button.pack(padx=10, pady=10, fill="x")
+
+customers_button = ctk.CTkButton(sidebar_frame, text="Customers", command=lambda: show_page(customers_frame))
+customers_button.pack(padx=10, pady=10, fill="x")
+
+
+
+# EMPLOYEES WIDGETS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Employees Title 
+employees_title = ctk.CTkLabel(employees_frame, text="Employee Management", width=200,height=50)
+employees_title.pack(pady=20)
+
 
 # Checkbox for Theme changing
 check_var = ctk.StringVar(value="Dark")
-theme_checkbox = ctk.CTkCheckBox(master = app, text="Dark Mode", command=change_theme, variable=check_var, onvalue="Dark",offvalue="Light")
-theme_checkbox.place(relx=1.0, rely=1.0, x=-10,y=-10, anchor="se")
+theme_checkbox = ctk.CTkCheckBox(master = employees_frame, text="Dark Mode", command=change_theme, variable=check_var, onvalue="Dark", offvalue="Light")
+theme_checkbox.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
 # User input field for Create employee
-employee_entry = ctk.CTkEntry(app, placeholder_text="Enter Employee Name")
+employee_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee Name")
 employee_entry.pack(pady=10)
 
 # Create employee button
-create_button = ctk.CTkButton(app, text="Create Employee", command=handle_create_employee)
+create_button = ctk.CTkButton(employees_frame, text="Create Employee", command=handle_create_employee)
 create_button.pack(pady=15)
 
 # Status label 
-status_label = ctk.CTkLabel(app, text="")
-status_label.place(relx=0.0, rely=0.0,x=0,y=10, anchor = "nw")
+status_label = ctk.CTkLabel(employees_frame, text="")
+status_label.place(relx=0.0, rely=0.0, x=0, y=10, anchor = "nw")
 
 # Button and Textbox for viewing all employees
-view_title = ctk.CTkLabel(app, text="Employee Records")
+view_title = ctk.CTkLabel(employees_frame, text="Employee Records")
 view_title.pack(pady=10)
-employee_textbox = ctk.CTkTextbox(app, width=350, height=120)
+employee_textbox = ctk.CTkTextbox(employees_frame, width=350, height=120)
 employee_textbox.pack(pady=10)
-view_button = ctk.CTkButton(app, text="View All Employees", command=handle_read_employees)
+view_button = ctk.CTkButton(employees_frame, text="View All Employees", command=handle_read_employees)
 view_button.pack(pady=10)
 
 # Entry fields & button for updating an existing employee
-update_title = ctk.CTkLabel(app, text="Update Employee")
+update_title = ctk.CTkLabel(employees_frame, text="Update Employee")
 update_title.pack(pady=10)
-update_entry = ctk.CTkEntry(app, placeholder_text="Enter Employee ID")
+update_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee ID")
 update_entry.pack(pady=10)
-update_name_entry = ctk.CTkEntry(app, placeholder_text="Enter New Name")
+update_name_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter New Name")
 update_name_entry.pack(pady=10)
-update_button = ctk.CTkButton(app, text="Modify Employee", command=handle_update_employee)
+update_button = ctk.CTkButton(employees_frame, text="Modify Employee", command=handle_update_employee)
 update_button.pack(pady=10)
 
 # Entry field & button to delete an existing employee
-delete_title = ctk.CTkLabel(app, text="Delete Employee")
+delete_title = ctk.CTkLabel(employees_frame, text="Delete Employee")
 delete_title.pack(pady=10)
-delete_entry = ctk.CTkEntry(app, placeholder_text="Enter Employee ID")
+delete_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee ID")
 delete_entry.pack(pady=10)
-delete_button = ctk.CTkButton(app, text="Delete Employee", command=handle_delete_employee)
+delete_button = ctk.CTkButton(employees_frame, text="Delete Employee", command=handle_delete_employee)
 delete_button.pack(pady=10)
+
+# CUSTROMERS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+customers_title = ctk.CTkLabel(customers_frame,text="Customer Management")
+customers_title.pack(pady=20)
+
 
 # Start the GUI event loop
 app.mainloop()
