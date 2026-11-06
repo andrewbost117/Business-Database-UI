@@ -42,6 +42,7 @@ def handle_update_employee():
     employee_new_name = update_name_entry.get()
 
     main.update_employee(employee_id, employee_new_name)
+    status_label.configure(text="Employee Updated Successfully.")
 
 # This function deletes an existing employees
 def handle_delete_employee():
@@ -71,6 +72,8 @@ def change_theme():
 def show_page(page):
     employees_frame.pack_forget()
     customers_frame.pack_forget()
+    prodcuts_frame.pack_forget()
+    orders_frame.pack_forget()
 
     page.pack(fill="both", expand=True)
 # Creates the main application's window
@@ -80,7 +83,7 @@ app = ctk.CTk()
 app.title("Business Database App")
 
 # Window Dimensions
-app.geometry("700x750")
+app.geometry("800x800")
 app.minsize(600, 650)
 
 
@@ -90,21 +93,53 @@ app.minsize(600, 650)
 # Side Bar and its children widgets for changing pages
 sidebar_frame = ctk.CTkFrame(app, width=180, corner_radius=0)
 sidebar_frame.pack(side="left",fill="y")
-sidebar_frame.pack_propagate(False) # Prevents child widgets from changing the frame's reuqested dimensions
+sidebar_frame.pack_propagate(False) # Prevents child widgets from changing the frame's requested dimensions
 
 # Content frame 
 content_frame = ctk.CTkFrame(app, fg_color="transparent")
 content_frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
 
+employee_title_frame = ctk.CTkFrame(content_frame)
+employee_title_frame.pack(fill="x",padx=10, pady=10)
+
 # Frame for employees
 employees_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
 employees_frame.pack(fill="both", expand=True)
+
+employees_frame.grid_columnconfigure(0, weight=1, uniform="crud")
+employees_frame.grid_columnconfigure(1, weight=1, uniform="crud")
+
+employees_frame.grid_rowconfigure(0, weight=1)
+employees_frame.grid_rowconfigure(0, weight=1)
+
+create_frame = ctk.CTkFrame(employees_frame)
+create_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+read_frame = ctk.CTkFrame(employees_frame)
+read_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+update_frame = ctk.CTkFrame(employees_frame)
+update_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+delete_frame = ctk.CTkFrame(employees_frame)
+delete_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+
 
 # Frame for customers
 customers_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
 customers_frame.pack(fill="both", expand=True)
 
+# Frame for products
+prodcuts_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
+prodcuts_frame.pack(fill="both", expand=True)
 
+# Frame for orders
+orders_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
+orders_frame.pack(fill="both", expand=True)
+
+# The program calls this to avoid any layout issues 
+show_page(employees_frame)
 
 # SIDE BAR WIDGETS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,64 +151,75 @@ employees_button.pack(padx=10, pady=10, fill="x")
 customers_button = ctk.CTkButton(sidebar_frame, text="Customers", command=lambda: show_page(customers_frame))
 customers_button.pack(padx=10, pady=10, fill="x")
 
+products_button = ctk.CTkButton(sidebar_frame, text="Products", command=lambda: show_page(prodcuts_frame))
+products_button.pack(padx=10, pady=10, fill="x")
 
+orders_button = ctk.CTkButton(sidebar_frame, text="Orders", command=lambda: show_page(orders_frame))
+orders_button.pack(padx=10, pady=10, fill="x")
 
 # EMPLOYEES WIDGETS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Employees Title 
-employees_title = ctk.CTkLabel(employees_frame, text="Employee Management", width=200,height=50)
-employees_title.pack(pady=20)
+employees_title = ctk.CTkLabel(employee_title_frame, text="Employee Management", font=("Arial",24))
+employees_title.pack(pady=5)
 
 
 # Checkbox for Theme changing
 check_var = ctk.StringVar(value="Dark")
-theme_checkbox = ctk.CTkCheckBox(master = employees_frame, text="Dark Mode", command=change_theme, variable=check_var, onvalue="Dark", offvalue="Light")
+theme_checkbox = ctk.CTkCheckBox(master = sidebar_frame, text="Dark Mode", command=change_theme, variable=check_var, onvalue="Dark", offvalue="Light")
 theme_checkbox.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
 # User input field for Create employee
-employee_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee Name")
+employee_entry = ctk.CTkEntry(create_frame, placeholder_text="Enter Employee Name")
 employee_entry.pack(pady=10)
 
 # Create employee button
-create_button = ctk.CTkButton(employees_frame, text="Create Employee", command=handle_create_employee)
+create_button = ctk.CTkButton(create_frame, text="Create Employee", command=handle_create_employee)
 create_button.pack(pady=15)
 
-# Status label 
-status_label = ctk.CTkLabel(employees_frame, text="")
-status_label.place(relx=0.0, rely=0.0, x=0, y=10, anchor = "nw")
 
 # Button and Textbox for viewing all employees
-view_title = ctk.CTkLabel(employees_frame, text="Employee Records")
+view_title = ctk.CTkLabel(read_frame, text="Employee Records")
 view_title.pack(pady=10)
-employee_textbox = ctk.CTkTextbox(employees_frame, width=350, height=120)
+employee_textbox = ctk.CTkTextbox(read_frame, width=350, height=120)
 employee_textbox.pack(pady=10)
-view_button = ctk.CTkButton(employees_frame, text="View All Employees", command=handle_read_employees)
+view_button = ctk.CTkButton(read_frame, text="View All Employees", command=handle_read_employees)
 view_button.pack(pady=10)
 
+# Status label 
+status_label = ctk.CTkLabel(read_frame, text="")
+status_label.pack(pady=10)
+
 # Entry fields & button for updating an existing employee
-update_title = ctk.CTkLabel(employees_frame, text="Update Employee")
+update_title = ctk.CTkLabel(update_frame, text="Update Employee")
 update_title.pack(pady=10)
-update_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee ID")
+update_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter Employee ID")
 update_entry.pack(pady=10)
-update_name_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter New Name")
+update_name_entry = ctk.CTkEntry(update_frame, placeholder_text="Enter New Name")
 update_name_entry.pack(pady=10)
-update_button = ctk.CTkButton(employees_frame, text="Modify Employee", command=handle_update_employee)
+update_button = ctk.CTkButton(update_frame, text="Modify Employee", command=handle_update_employee)
 update_button.pack(pady=10)
 
 # Entry field & button to delete an existing employee
-delete_title = ctk.CTkLabel(employees_frame, text="Delete Employee")
+delete_title = ctk.CTkLabel(delete_frame, text="Delete Employee")
 delete_title.pack(pady=10)
-delete_entry = ctk.CTkEntry(employees_frame, placeholder_text="Enter Employee ID")
+delete_entry = ctk.CTkEntry(delete_frame, placeholder_text="Enter Employee ID")
 delete_entry.pack(pady=10)
-delete_button = ctk.CTkButton(employees_frame, text="Delete Employee", command=handle_delete_employee)
+delete_button = ctk.CTkButton(delete_frame, text="Delete Employee", command=handle_delete_employee)
 delete_button.pack(pady=10)
 
 # CUSTROMERS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-customers_title = ctk.CTkLabel(customers_frame,text="Customer Management")
-customers_title.pack(pady=20)
+
+
+# PRODUCTS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# ORDERS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 # Start the GUI event loop
